@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}">
+	<script type="text/javascript" th:src="@{/webjars/jquery/3.6.4/jquery.min.js}"></script>
+<meta charset="UTF-8">
+<title>ログイン画面</title>
+</head>
+<body>
+	<div th:insert="common/sourceList :: sourceList"></div>
+	<div th:replace="common/messageIcon :: messageIcon"></div>
+	<div class="container-fluid">
+	<h2>ログイン画面</h2>
+		<div class="d-flex align-items-center"  role="alert" th:if="${errorMsg != null}">
+		<svg class="bi flex-shrink-0 me-2" width="24" height="24">
+			<use xlink:href="#exclamation-triangle-fill" />
+		</svg>
+			<div>
+				<span th:text="${errorMsg}"></span>
+			</div>
+		</div>
+	<form th:action="@{/login}" method="post" th:object="${loginForm}">
+		<div class="form-group">
+			<div class="col-3 col-md-2 col-xxl-1">
+			<p><label for="loginId">ログインID：</label>
+			<input type="text" class="form-control" th:field="*{loginId}">
+			</div>
+			<div class="col-3 col-md-2 col-xxl-1">
+			<p><label for="password">パスワード：</label>
+			<input type="password" class="form-control" th:field="*{password}">	
+			<p><input type="submit" class="btn btn-primary"  value="ログイン">
+			</div>
+	</div>
+	</form>
+			<a th:href="@{/signup}">▶▶ユーザー登録はこちら(*^◯^*)</a>
+</div>
+</body>
+</html>
