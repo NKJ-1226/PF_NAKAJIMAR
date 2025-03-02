@@ -1,10 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <title>トップメニュー</title>
 </head>
 <body>
-トップメニューなんだ(*^◯^*)
+<div th:insert="common/sourceList :: sourceList"></div>
+<div th:replace="common/header :: header"></div>
+<div class="container-fluid">
+	<h2>★トップメニュー★</h2>
+	<div class="mt-3">
+		商品一覧の確認、管理はこちら<!--後で年間、月間のいいねランキングの確認、管理に変更すること-->
+	</div>
+	<a href="" class="btn btn-primary">商品一覧画面へ</a><!--後で年間、月間のいいねランキング一覧画面？に変更すること-->
+	<th:block th:if="${hasUserManageAuth}">
+		<div class="mt-3">
+			ユーザー情報の管理はこちら<!--ユーザーよりもアカウントの管理のほうがいいかも...？-->
+		</div>
+		<a href="" class="btn btn-danger">ユーザー管理画面へ</a>
+	</th:block>
+</div>
 </body>
 </html>
