@@ -16,57 +16,77 @@ import com.example.demo.constant.UrlConst;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Spring Securityカスタマイズ用
+ * Spring Securityカスタマイズクラス
  * 
- * @author nkjpo
- * 
+ * @author nakajima
+ *
  */
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-	/**パスワードエンコーダー */
+
+	/** パスワードエンコーダー */
 	private final PasswordEncoder passwordEncoder;
-	
-	/**ユーザー情報取得Service */
+
+	/** ユーザー情報取得Service */
 	private final UserDetailsService userDetailsService;
-	
-	/**メッセージ取得 */
+
+	/** メッセージ取得 */
 	private final MessageSource messageSource;
-	
+
+	/** ユーザー名のname属性 */
 	private final String USERNAME_PARAMETER = "loginId";
 
 	/**
-	 * Spring Securityカスタマイズ用
+	 * Spring Securityの各種カスタマイズを行います。
 	 * 
-	 * @param http カスタマイズパラメータ
+	 * <p>カスタマイズ設定するのは、以下の項目になります。
+	 * <ul>
+	 * <li>認証不要URL</li>
+	 * <li>ログイン画面のURL</li>
+	 * <li>usernameとして利用するリクエストパラメーター名</li>
+	 * <li>ログイン成功時のリダイレクト先URL</li>
+	 * </ul>
+	 * 
+	 * @param http セキュリティ設定
 	 * @return カスタマイズ結果
-	 * @throws Exception 予期せぬ例外
+	 * @throws Exception 予期せぬ例外が発生した場合
 	 */
 	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-		
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
 		http
-			.authorizeHttpRequests(
-					authorize ->authorize.requestMatchers(UrlConst.NO_AUTHENTICARION).permitAll()
-						.requestMatchers("/static/**", "/public/**", "/resources/**").permitAll()
-						.anyRequest().authenticated())
-			.formLogin(
-					login -> login.loginPage(UrlConst.LOGIN) //自作ログイン画面(Controller)を使うための設定
-						.usernameParameter(USERNAME_PARAMETER) //ユーザ名パラメータのname属性
-						.defaultSuccessUrl(UrlConst.MENU)); //ログイン成功後のリダイレクトURL
-		//.logout(logout -> logout.logoutSuccessUrl(UrlConst.SIGNUP));
-		
+				.authorizeHttpRequests(
+						authorize -> authorize.requestMatchers(UrlConst.NO_AUTHENTICATION).permitAll()
+								.anyRequest().authenticated())
+				.formLogin(
+						login -> login.loginPage(UrlConst.LOGIN) // 自作ログイン画面(Controller)を使うための設定
+								.usernameParameter(USERNAME_PARAMETER) // ユーザ名パラメータのname属性
+								.defaultSuccessUrl(UrlConst.MENU)); // ログイン成功後のリダイレクトURL
+
 		return http.build();
 	}
-	
-	@Bean //既存のプロバイダに設定を追加
-	AuthenticationProvider daoAuthenticationProvider( ) {
+
+	/**
+	 * Providerのカスタマイズを行い、独自Providerを返却します。
+	 * 
+	 * <p>カスタマイズ設定するのは、以下のフィールドになります。
+	 * <ul>
+	 * <li>UserDetailsService</li>
+	 * <li>PasswordEncoder</li>
+	 * <li>MessageSource</li>
+	 * </ul>
+	 * 
+	 * @return カスタマイズしたProvider情報
+	 */
+	@Bean
+	AuthenticationProvider daoAuthenticationProvider() {
 		DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 		provider.setUserDetailsService(userDetailsService);
 		provider.setPasswordEncoder(passwordEncoder);
 		provider.setMessageSource(messageSource);
-		
+
 		return provider;
 	}
 }

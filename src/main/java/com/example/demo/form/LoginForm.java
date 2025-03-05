@@ -2,11 +2,18 @@ package com.example.demo.form;
 
 import lombok.Data;
 
+/**
+ * ログイン画面Formクラス
+ * 
+ * @author nakajima
+ *
+ */
 @Data
 public class LoginForm {
-	
-	private String loginId;
-	
-	private String password;
 
+	/** ログインID */
+	private String loginId;
+
+	/** パスワード */
+	private String password;
 }
